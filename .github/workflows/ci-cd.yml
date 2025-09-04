@@ -1,0 +1,44 @@
+name: CI/CD (uv)
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  # CI：安装依赖 + 测试
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+
+      - name: Install dependencies
+        run: uv pip install -r requirements.txt
+
+      - name: Run tests
+        run: uv run pytest
+
+  # CD：仅 main 分支且测试通过后，打包出一个可下载的 zip（源码 + 依赖清单）
+  package:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create artifact
+        run: |
+          mkdir -p out/student-info-app
+          cp -r student_info out/student-info-app/
+          cp requirements.txt README.md out/student-info-app/
+          cd out && zip -r student-info-app.zip student-info-app
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: student-info-app
+          path: out/student-info-app.zip
