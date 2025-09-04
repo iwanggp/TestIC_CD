@@ -18,7 +18,7 @@ jobs:
 
 
       - name: Run tests
-        run: uv run pytest -q
+        run: uv run -p pytest 
 
   # CD：仅 main 分支且测试通过后，打包出一个可下载的 zip（源码 + 依赖清单）
   package:
