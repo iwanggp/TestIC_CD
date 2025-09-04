@@ -15,6 +15,12 @@ jobs:
 
       - name: Install uv
         run: curl -LsSf https://astral.sh/uv/install.sh | sh
+
+         # 🔹 先创建虚拟环境（默认在 .venv）
+      - name: Create venv
+        run: uv venv --python=3.11
+
+        
       - name: Install dependencies
         run: uv pip install -r requirements.txt  
       - name: Run tests
