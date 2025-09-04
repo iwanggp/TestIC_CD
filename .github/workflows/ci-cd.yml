@@ -23,8 +23,9 @@ jobs:
         
       - name: Install dependencies
         run: uv pip install -r requirements.txt  
+      # 跑测试（用模块方式最稳）
       - name: Run tests
-        run: uv run -p pytest 
+        run: uv run python -m pytest -q
 
   # CD：仅 main 分支且测试通过后，打包出一个可下载的 zip（源码 + 依赖清单）
   package:
